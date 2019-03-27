@@ -36,5 +36,59 @@ def preprocess_input(filename_str):
         word_id[word] = id
         id += 1
 
+    # Number of attributes per instance
+    # These include bitstring for words, rating
+    rating_bits = 5
+    cols = id + rating_bits
+
+    data_list = []
+    for line in lines:
+
+        line = line.lower()
+
+        # Get rating
+        rating = 0
+        rating_str = line.split(" ", 2)[1]
+        if rating_str.endswith("one"):
+            rating = 1
+        elif rating_str.endswith("two"):
+            rating = 2
+        elif rating_str.endswith("three"):
+            rating = 3
+        elif rating_str.endswith("four"):
+            rating = 4
+        elif rating_str.endswith("five"):
+            rating = 5
+
+        # Remove length, rating
+        line = line.split(" ", 2)[2]
+        # Add split characters to regex based on requirement
+        line = re.sub(r'[\.\?]', ",", line)
+        reviews = line.split(",")
+
+        for review in reviews:
+
+            # Merge consecutive spaces into one
+            review = re.sub(r'[ ]+', " ", review)
+            if review == "" or review == " ":
+                continue
+
+            # Create row
+            instance = np.zeros((cols, ), dtype=int)
+            # Set appropriate rating bit
+            instance[rating] = 1
+
+            words = review.split()
+            for word in words:
+                attr_idx = word_id.get(word, None)
+                if attr_idx is not None:
+                    instance[rating_bits + attr_idx] = 1
+
+            data_list.append(instance)
+
+    ret_val = np.array(data_list)
+    return ret_val
+
 if __name__ == "__main__":
+
     preprocess_input("test-input.txt")
