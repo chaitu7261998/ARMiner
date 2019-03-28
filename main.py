@@ -2,6 +2,7 @@
 
 import re               # Regular Expressions
 import numpy as np      # Numpy
+from sklearn.naive_bayes import BernoulliNB
 
 # Extracts words from given list of files and assigns an id to them
 # Arguments: List of filenames
@@ -132,6 +133,6 @@ if __name__ == "__main__":
 
     test_data = get_data(["test.txt"], mapping)
 
-    classifier = naive_bayes.BernouliNB()
+    classifier = BernoulliNB()
 
     classifier.fit(train_data, test_data)
