@@ -1,10 +1,12 @@
 # Use python 3 or above
 
-import re
-import numpy as np
+import re               # Regular Expressions
+import numpy as np      # Numpy
 
-# Returns preprocessed numpy array
-def preprocess_input(filename_str):
+# Extracts words from given list of files and assigns an id to them
+# Arguments: List of filenames
+# Returns: Dictionary with key = word, value = id
+def extract_words_and_add_to_dict(filenamelist):
 
     # Ignore these words
     stop_words = ["a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are", "as", "at", "be", "because", "been", "before", "being",
@@ -15,80 +17,110 @@ def preprocess_input(filename_str):
                   "until", "up", "very", "was", "we", "wed", "well", "were", "weve", "were", "what", "whats", "when", "whens", "where", "wheres", "which", "while", "who", "whos", "whom", "why", "whys", "with", "would",
                   "you", "youd", "youll", "youre", "youve", "your", "yours", "yourself", "yourselves"]
 
-    # Open file and read lines
-    with open(filename_str) as f:
-        lines = f.read().splitlines()
 
-    # Add non-stop words to dictionary
+    # Dictionary containing word to id mapping
     word_id = {}
-    for line in lines:
-        line = re.sub(r'[^a-zA-Z\s]', "", line)
-        words = line.split()
-        words = words[2:]
-        for word in words:
-            word = word.lower()
-            if word not in stop_words:
-                word_id[word] = 0
+    # For all files in the given list of filenames
+    for filename in filenamelist:
 
-    # Assign id's to words in dictionary
-    id = 0
-    for word in word_id:
-        word_id[word] = id
-        id += 1
+        # Open file and read lines
+        with open(filename) as f:
+            lines = f.read().splitlines()
+
+        # For all lines in this file
+        for line in lines:
+            # Remove everything other than alphabets, whitespace
+            line = re.sub(r'[^a-zA-Z\s]', "", line)
+            # Split at whitespace
+            words = line.split()
+            # Ignore length, rating
+            words = words[2:]
+            for word in words:
+                word = word.lower()
+                # Add this word to dictionary if it is not a stop word
+                if word not in stop_words:
+                    word_id[word] = 0
+
+        # Assign id's to words in dictionary
+        id = 0
+        for word in word_id:
+            word_id[word] = id
+            id += 1
+
+    # Return the dictionary
+    return word_id
+
+# Reads data from given files and stores it in a numpy array
+# Arguments: List of filenames, dictionary containing word -> id mapping
+# Returns: 2D Numpy array representation of given data
+# The first 5 columns represent the rating of the review
+# Other columns represent which words are present in the review
+def get_data(filenamelist, word_id):
 
     # Number of attributes per instance
     # These include bitstring for words, rating
     rating_bits = 5
-    cols = id + rating_bits
+    cols = rating_bits + len(word_id)
 
+    # List representation of given data
     data_list = []
-    for line in lines:
 
-        line = line.lower()
+    # For all files in the given list of filenames
+    for filename in filenamelist:
+        # Open file and read lines
+        with open(filename) as f:
+            lines = f.read().splitlines()
 
-        # Get rating
-        rating = 0
-        rating_str = line.split(" ", 2)[1]
-        if rating_str.endswith("one"):
-            rating = 1
-        elif rating_str.endswith("two"):
-            rating = 2
-        elif rating_str.endswith("three"):
-            rating = 3
-        elif rating_str.endswith("four"):
-            rating = 4
-        elif rating_str.endswith("five"):
-            rating = 5
+        for line in lines:
+            line = line.lower()
 
-        # Remove length, rating
-        line = line.split(" ", 2)[2]
-        # Add split characters to regex based on requirement
-        line = re.sub(r'[\.\?]', ",", line)
-        reviews = line.split(",")
+            # Get rating
+            rating = 0
+            rating_str = line.split(" ", 2)[1]
+            if rating_str.endswith("one"):
+                rating = 1
+            elif rating_str.endswith("two"):
+                rating = 2
+            elif rating_str.endswith("three"):
+                rating = 3
+            elif rating_str.endswith("four"):
+                rating = 4
+            elif rating_str.endswith("five"):
+                rating = 5
 
-        for review in reviews:
+            # Remove length, rating
+            line = line.split(" ", 2)[2]
+            # Add split characters to regex based on requirement
+            line = re.sub(r'[\.\?]', ",", line)
+            reviews = line.split(",")
 
-            # Merge consecutive spaces into one
-            review = re.sub(r'[ ]+', " ", review)
-            if review == "" or review == " ":
-                continue
+            for review in reviews:
 
-            # Create row
-            instance = np.zeros((cols, ), dtype=int)
-            # Set appropriate rating bit
-            instance[rating] = 1
+                # Merge consecutive spaces into one
+                review = re.sub(r'[ ]+', " ", review)
+                if review == "" or review == " ":
+                    continue
 
-            words = review.split()
-            for word in words:
-                attr_idx = word_id.get(word, None)
-                if attr_idx is not None:
-                    instance[rating_bits + attr_idx] = 1
+                # Create row
+                instance = np.zeros((cols, ), dtype=int)
+                # Set appropriate rating bit
+                instance[rating] = 1
 
-            data_list.append(instance)
+                words = review.split()
+                for word in words:
+                    attr_idx = word_id.get(word, None)
+                    if attr_idx is not None:
+                        instance[rating_bits + attr_idx] = 1
 
+                data_list.append(instance)
+
+    # Convert to numpy array
     ret_val = np.array(data_list)
     return ret_val
 
 if __name__ == "__main__":
 
-    preprocess_input("test-input.txt")
+    mapping = extract_words_and_add_to_dict(["test-input.txt"])
+    training_data = get_data(["test-input.txt"], mapping)
+    for row in training_data:
+        print(row)
