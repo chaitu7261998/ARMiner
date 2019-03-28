@@ -120,7 +120,18 @@ def get_data(filenamelist, word_id):
 
 if __name__ == "__main__":
 
-    mapping = extract_words_and_add_to_dict(["test-input.txt"])
-    training_data = get_data(["test-input.txt"], mapping)
-    for row in training_data:
-        print(row)
+    mapping = extract_words_and_add_to(["train.txt"])
+
+    train_data_info = get_data(["train_info.txt"],mapping)
+    train_data_non_info = get_data(["train_data_non_info.txt"],mapping)
+
+    Y = np.ones(train_data_info.shape[0], dtype = int)
+    Y = np.append(Y, np.zeros(train_data_non_info.shape[0], dtype = int))
+
+    train_data = np.append(train_data_info, train_data_non_info, axis = 0)
+
+    test_data = get_data(["test.txt"], mapping)
+
+    classifier = naive_bayes.BernouliNB()
+
+    classifier.fit(train_data, test_data)
