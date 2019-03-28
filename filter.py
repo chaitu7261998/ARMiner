@@ -1,6 +1,6 @@
-from preprocess import extract_words_and_add_to_dict,get_data,np
+from preprocess import *
 from sklearn import naive_bayes
-from helper import get_instance_words
+from helper import get_instance_words,get_all_instance_words
 
 def classify(clf, clf_name, trainX, trainY, testX, testY):
     print(clf_name)
@@ -18,6 +18,7 @@ if __name__ == "__main__":
 
     # Get Training and Testing Data
     mapping = extract_words_and_add_to_dict(["datasets/swiftkey/trainL/info.txt","datasets/swiftkey/trainL/non-info.txt"])
+    reverse_mapping = get_reverse_mapping(mapping)
     training_data0 = get_data(["datasets/swiftkey/trainL/info.txt"], mapping)
     trainY = np.ones(training_data0.shape[0], dtype=int)  
 
@@ -30,9 +31,8 @@ if __name__ == "__main__":
     testY = np.zeros(testX.shape[0])
 
     # Writes the words corresponding to the instances in the helper file
-    get_instance_words(mapping,training_data0,"helper1.txt")
-    get_instance_words(mapping,training_data1,"helper2.txt")
-    get_instance_words(mapping,testX,"helper3.txt")
+    # get_all_instance_words(reverse_mapping,testX,"helper.txt")
+    # get_instance_words(reverse_mapping,testX[1])
 
     classify(naive_bayes.BernoulliNB(), "BernoulliNB", trainX, trainY, testX, testY)
     classify(naive_bayes.GaussianNB(), "GaussianNB", trainX, trainY, testX, testY)

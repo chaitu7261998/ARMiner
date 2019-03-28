@@ -1,17 +1,13 @@
+import numpy as np
 # helper function takes in the data and word mappings 
 # and returns the words corresponding to each instance for the data
 
-def get_instance_words(mapping,data,file_name):
+def get_all_instance_words(reverse_mapping,data,file_name):
 
 	# word id starts from zero
 	rating_bits = 6
 	instance_count = 1
 	
-	# preprocess the mapping here , link the ids to the words 
-	reverse_mapping = {}
-	for word_map in mapping:
-		reverse_mapping[mapping[word_map]] = word_map		
-
 	word_list = open(file_name,"w")
 
 	# prints the instances and the words per instance for reference 
@@ -25,3 +21,17 @@ def get_instance_words(mapping,data,file_name):
 				word_list.write( reverse_mapping[word_id]+"\n" )
 		instance_count = instance_count + 1
 	word_list.close()
+
+def get_instance_words(reverse_mapping,data):
+	# word id starts from zero
+	rating_bits = 6
+	instance_count = 1
+
+	for v in data :
+		print(v, end=', ')
+	# print(data)
+	indices = np.nonzero(data)[0][1:]
+	print(indices)
+	for index in indices:
+		print(reverse_mapping[index-rating_bits])
+	
