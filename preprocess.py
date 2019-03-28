@@ -117,10 +117,3 @@ def get_data(filenamelist, word_id):
     # Convert to numpy array
     ret_val = np.array(data_list)
     return ret_val
-
-if __name__ == "__main__":
-
-    mapping = extract_words_and_add_to_dict(["test-input.txt"])
-    training_data = get_data(["test-input.txt"], mapping)
-    for row in training_data:
-        print(row)
