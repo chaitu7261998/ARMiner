@@ -59,7 +59,7 @@ def get_data(filenamelist, word_id):
 
     # Number of attributes per instance
     # These include bitstring for words, rating
-    rating_bits = 5
+    rating_bits = 6
     cols = rating_bits + len(word_id)
 
     # List representation of given data
