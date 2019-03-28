@@ -97,9 +97,12 @@ def get_data(filenamelist, word_id):
 
             for review in reviews:
 
-                # Merge consecutive spaces into one
-                review = re.sub(r'[ ]+', " ", review)
-                if review == "" or review == " ":
+                # If review is empty ignore
+                if review == "":
+                    continue
+
+                # If review contains non-alphabets ignore
+                if re.match(r'[^a-zA-Z]', review) is not None:
                     continue
 
                 # Create row
@@ -118,3 +121,6 @@ def get_data(filenamelist, word_id):
     # Convert to numpy array
     ret_val = np.array(data_list)
     return ret_val
+
+def get_reverse_mapping(mapping):
+    return {val : key for key,val in mapping.items()}
