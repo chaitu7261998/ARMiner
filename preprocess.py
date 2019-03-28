@@ -2,6 +2,7 @@
 
 import re               # Regular Expressions
 import numpy as np      # Numpy
+from sklearn.naive_bayes import BernoulliNB
 
 # Extracts words from given list of files and assigns an id to them
 # Arguments: List of filenames
