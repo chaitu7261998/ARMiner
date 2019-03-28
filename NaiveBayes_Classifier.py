@@ -1,4 +1,4 @@
-# Naive Bayes Classifier
+# Naive Bayes classifier
 
 if __name__ == "__main__" :
 
