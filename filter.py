@@ -41,11 +41,3 @@ def filter(training_data_list, training_data_info, training_data_noninfo, test_d
     predictions = classify(naive_bayes.BernoulliNB(), "BernoulliNB", trainX, trainY, testX, testY)
     informative_reviews = testX[predictions]
     return (informative_reviews, mapping, reverse_mapping)
-
-training_data_list = ["datasets/swiftkey/trainL/info.txt","datasets/swiftkey/trainL/non-info.txt"]
-training_data_info = "datasets/swiftkey/trainL/info.txt"
-training_data_noninfo = "datasets/swiftkey/trainL/non-info.txt"
-test_data = "datasets/swiftkey/trainU/unlabeled.txt"
-informative_reviews, mapping, reverse_mapping = filter(training_data_list, training_data_info, training_data_noninfo, test_data)
-print(informative_reviews)
-get_all_instance_words(reverse_mapping, informative_reviews, "bobs.txt")
