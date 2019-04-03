@@ -116,7 +116,9 @@ def get_data(filenamelist, word_id):
                     if attr_idx is not None:
                         instance[rating_bits + attr_idx] = 1
 
-                data_list.append(instance)
+                # If instance is not all zeros then append
+                if np.count_nonzero(instance[rating_bits:]) != 0:
+                    data_list.append(instance)
 
     # Convert to numpy array
     ret_val = np.array(data_list)
