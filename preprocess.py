@@ -16,7 +16,7 @@ def extract_words_and_add_to_dict(filenamelist):
                   "more", "most", "my", "myself", "nor", "of", "on", "once", "only", "or", "other", "ought", "our", "ours", "ourselves", "out", "over", "own", "same", "she", "shed", "shell", "shes", "should", "so",
                   "some", "such", "than", "that", "thats", "the", "their", "theirs", "them", "themselves", "then", "there", "theres", "these", "they", "theyd", "theyll", "theyre", "theyve", "this", "those", "through", "to", "too", "under",
                   "until", "up", "very", "was", "we", "wed", "well", "were", "weve", "were", "what", "whats", "when", "whens", "where", "wheres", "which", "while", "who", "whos", "whom", "why", "whys", "with", "would",
-                  "you", "youd", "youll", "youre", "youve", "your", "yours", "yourself", "yourselves"]
+                  "you", "youd", "youll", "youre", "youve", "your", "yours", "yourself", "yourselves", "need", "needed"]
 
 
     # Dictionary containing word to id mapping
