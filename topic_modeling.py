@@ -20,20 +20,16 @@ def group_by_topic(X, mapping, reverse_mapping):
 
     return lat_dir_aloc.transform(X)
 
-def model_topics():
-    training_data_list = ["datasets/swiftkey/trainL/info.txt","datasets/swiftkey/trainL/non-info.txt"]
-    training_data_info = "datasets/swiftkey/trainL/info.txt"
-    training_data_noninfo = "datasets/swiftkey/trainL/non-info.txt"
-    test_data = "datasets/swiftkey/trainU/unlabeled.txt"
+def model_topics(training_data_list, training_data_info, training_data_noninfo, test_data):
 
     informative_reviews, mapping, reverse_mapping = filter.filter(training_data_list,
                                                                   training_data_info,
                                                                   training_data_noninfo,
                                                                   test_data)
 
-    grouping_input = np.append(informative_reviews,
-                               preprocess.get_data([training_data_info], mapping),
-                               axis=0)
+    useful_data = np.append(informative_reviews,
+                            preprocess.get_data([training_data_info], mapping),
+                            axis=0)
 
-    group_matrix = group_by_topic(grouping_input, mapping, reverse_mapping)
-    return group_matrix
+    group_matrix = group_by_topic(useful_data, mapping, reverse_mapping)
+    return (group_matrix, useful_data, mapping)
