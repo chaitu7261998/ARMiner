@@ -36,3 +36,9 @@ def get_instance_words(reverse_mapping,data):
 	indices = np.nonzero(data)[0][1:]
 	for index in indices:
 		print(reverse_mapping[index-rating_bits])
+
+def get_rating(instance):
+    for i in range(6):
+        if instance[i] == 1 :
+            return i
+    return -1
