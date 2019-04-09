@@ -1,4 +1,4 @@
-from filter_EMNB import filter
+from filter_EM_NB import filter
 import helper
 import preprocess
 import numpy as np
