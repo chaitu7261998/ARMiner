@@ -4,6 +4,8 @@ from helper import get_instance_words,get_all_instance_words
 from Semi_EM_NB import Semi_EM_MultinomialNB
 from sklearn import metrics
 
+
+
 def classify(clf, clf_name, trainX, trainY,trainU, testX, testY):
     print(clf_name)
     print("Fitting....")
