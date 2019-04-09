@@ -4,6 +4,7 @@ import preprocess
 import numpy as np
 from sklearn.decomposition import LatentDirichletAllocation
 
+
 def group_by_topic(X, mapping, reverse_mapping):
 
     lat_dir_aloc = LatentDirichletAllocation(n_components=10)
