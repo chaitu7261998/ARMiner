@@ -5,6 +5,8 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.naive_bayes import GaussianNB
 from scipy.linalg import get_blas_funcs
 
+
+
 """ Naive Bayes classifier for multinomial models for semi-supervised learning. Use both labeled and unlabeled data to train NB classifier, update parameters using unlabeled data, and all data to evaluate performance of classifier. Optimize classifier using Expectation-Maximization algorithm. """
 
 class Semi_EM_MultinomialNB(): 
