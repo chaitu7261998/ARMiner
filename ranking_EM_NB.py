@@ -3,6 +3,7 @@ from helper import get_rating
 import numpy as np
 import preprocess
 
+
 def group_volume(review_group_matrix):
 	return (review_group_matrix.sum(axis=0))
 
