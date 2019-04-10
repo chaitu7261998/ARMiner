@@ -27,7 +27,7 @@ def get_all_instance_words(reverse_mapping,data,file_name):
     word_list.close()
 
 # this function prints all the words corresponding to an instance
-def get_instance_words(reverse_mapping,data):
+def get_instance_words(reverse_mapping,data,file_name):
 	# word id starts from zero
 	rating_bits = 6
 	instance_count = 1
