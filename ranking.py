@@ -129,43 +129,48 @@ def instance_ranking(useful_data, review_group_matrix, group_number,rank_number,
                            ranked_useful_data,
                            "groups/group_"+str(group_number)+"_rank_"+str(rank_number)+".txt")
 
+    return unique_useful_data
+
 def main():
 
-	training_data_list = ["datasets/swiftkey/trainL/info.txt","datasets/swiftkey/trainL/non-info.txt"]
-	training_data_info = "datasets/swiftkey/trainL/info.txt"
-	training_data_noninfo = "datasets/swiftkey/trainL/non-info.txt"
-	test_data = "datasets/swiftkey/trainU/unlabeled.txt"
+    training_data_list = ["datasets/swiftkey/trainL/info.txt","datasets/swiftkey/trainL/non-info.txt"]
+    training_data_info = "datasets/swiftkey/trainL/info.txt"
+    training_data_noninfo = "datasets/swiftkey/trainL/non-info.txt"
+    test_data = "datasets/swiftkey/trainU/unlabeled.txt"
 
-	review_group_matrix, useful_data, mapping = model_topics(training_data_list,
-															 training_data_info,
-															 training_data_noninfo,
-															 test_data)
+    review_group_matrix, useful_data, mapping = model_topics(training_data_list,
+    														 training_data_info,
+    														 training_data_noninfo,
+    														 test_data)
 
-	ratings = review_ratings (useful_data)
-	reverse_mapping = get_reverse_mapping(mapping)
+    ratings = review_ratings (useful_data)
+    reverse_mapping = get_reverse_mapping(mapping)
 
-	instance_weights = get_instance_weights(review_group_matrix.shape[0])
-	group_weights = get_group_weights(2)
-	group_rankings = get_group_rankings(review_group_matrix, ratings, group_weights)
-	print(group_rankings)
+    instance_weights = get_instance_weights(review_group_matrix.shape[0])
+    group_weights = get_group_weights(2)
+    group_rankings = get_group_rankings(review_group_matrix, ratings, group_weights)
+    print(group_rankings)
 
-	num_of_groups = len(review_group_matrix[0])
+    num_of_groups = len(review_group_matrix[0])
 
-	groups = [[] for i in range(num_of_groups)]
+    groups = [[] for i in range(num_of_groups)]
 
-	group_cutoff = 0.01
+    group_cutoff = 0.01
 
-	for i in range(0,len(useful_data)):
-		j = 0
-		for j in range(0,num_of_groups):
-			if review_group_matrix[i][j] >= group_cutoff:
-				groups[j].append(useful_data[i])
+    for i in range(0,len(useful_data)):
+    	j = 0
+    	for j in range(0,num_of_groups):
+    		if review_group_matrix[i][j] >= group_cutoff:
+    			groups[j].append(useful_data[i])
 
-	group_ranking_result = []
-	rank =1
-	for idx in group_rankings:
-		group_ranking_result.append(instance_ranking(groups[idx-1], review_group_matrix, idx-1, rank,reverse_mapping))
-		rank =rank+1
+    group_ranking_result = []
+    rank =1
+    for idx in group_rankings:
+    	group_ranking_result.append(instance_ranking(groups[idx-1], review_group_matrix, idx-1, rank,reverse_mapping))
+    	rank =rank+1
+
+    group_ranking_result = group_ranking_result
+    return (group_ranking_result, mapping)
 
 if __name__ == '__main__':
 	main()
