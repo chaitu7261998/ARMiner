@@ -13,17 +13,21 @@ def group_average_rating(review_group_matrix, volumes, ratings):
 	return average_ratings
 
 def get_group_rankings(review_group_matrix, ratings,group_weights):
-	volumes = group_volume(review_group_matrix)
-	high_volume = max(volumes)
-	average_ratings = group_average_rating(review_group_matrix, volumes, ratings)
-	group_count = volumes.shape[0]
-	group_scores = [ (group_weights[0] * float(volumes[idx]/high_volume) + group_weights[1]*average_ratings[idx],idx+1) for idx in range(group_count)]
-	group_scores.sort(reverse=True)
-	scores = np.zeros(group_count)
-	for x,y in group_scores :
-		scores[y-1] = x
-	rankings = [ group_scores[idx][1] for idx in range(group_count)]
-	return (scores,rankings)
+    volumes = group_volume(review_group_matrix)
+    high_volume = max(volumes)
+    average_ratings = group_average_rating(review_group_matrix, volumes, ratings)
+    group_count = volumes.shape[0]
+    group_scores = [ (group_weights[0] * float(volumes[idx]/high_volume) + group_weights[1]*average_ratings[idx],idx+1) for idx in range(group_count)]
+    group_scores.sort(reverse=True)
+    #print("Group scores: ", group_scores)
+    scores = np.zeros(group_count)
+    rankings = np.zeros(group_count)
+    for i, (x, y) in enumerate(group_scores):
+        scores[y - 1] = x
+        rankings[y - 1] = i + 1
+    #print("Scores: ", scores)
+    #print("Rankings: ", rankings)
+    return (rankings, scores)
 
 def review_ratings(informative_reviews):
 	ratings = np.zeros(informative_reviews.shape[0])
