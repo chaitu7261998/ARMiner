@@ -114,7 +114,7 @@ def instance_ranking(useful_data, review_group_matrix, group_number,rank_number,
     for i in range(len(unique_useful_data)):
     	proportion.append(unique_data_proportion[i])
     	duplicates.append(unique_data_count[i])
-    	temp =0
+    	temp =1
     	for x in range(6):
     		if unique_useful_data[i][x]: temp=max(temp,x)
     	rating.append(float(1/temp))
@@ -186,6 +186,7 @@ def main(app_name):
         group_ranking_result.append(group_rank)
         instance_ranking_result.append(instance_rank)
         rank = rank + 1
+        print("Finised ranking a group")
 
     return (group_ranking_result, instance_ranking_result, group_rankings, group_scores, mapping)
 
