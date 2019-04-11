@@ -173,12 +173,17 @@ def main(app_name):
                             "datasets/" + app_name + "/trainL/non-info.txt"]
     training_data_info = "datasets/" + app_name + "/trainL/info.txt"
     training_data_noninfo = "datasets/" + app_name + "/trainL/non-info.txt"
-    test_data = "datasets/" + app_name + "/trainU/unlabeled.txt"
+    trainU_data = "datasets/" + app_name + "/trainU/unlabeled.txt"
+    test_data_info = "datasets/" + app_name + "/test/info.txt"
+    test_data_noninfo = "datasets/" + app_name + "/test/info.txt"
+
 
     review_group_matrix, useful_data, mapping, pred_prob = model_topics(training_data_list,
     														 training_data_info,
     														 training_data_noninfo,
-    														 test_data)
+    														 test_data_info,
+    														 test_data_noninfo,
+    														 trainU_data)
 
     ratings = review_ratings (useful_data)
     reverse_mapping = get_reverse_mapping(mapping)

@@ -18,7 +18,8 @@ class Semi_EM_MultinomialNB():
         self.clf = MultinomialNB(alpha=self.alpha, fit_prior=self.fit_prior, class_prior=self.class_prior) 
         self.log_lkh = -np.inf # log likelihood 
         self.max_iter = max_iter # max number of EM iterations 
-        self.tol = tol # tolerance of log likelihood increment 
+        self.tol = tol # tolerance of log likelihood increment
+        #self.predict_proba_array = None 
 
     def fit(self, X_l, y_l, X_u): 
         n_ul_docs = X_u.shape[0] # number of unlabeled samples 
@@ -54,6 +55,8 @@ class Semi_EM_MultinomialNB():
             y = np.concatenate((y_l, y_u), axis=0) 
             clf.fit(X, y) # check convergence: update log likelihood 
             p_c_d = clf.predict_proba(X_u) 
+
+            #self.predict_proba_array = clf.
             
 
             lp_w_c = clf.feature_log_prob_ # log CP of word given class [n_classes, n_words] 
@@ -71,12 +74,15 @@ class Semi_EM_MultinomialNB():
                 self.log_lkh = expectation 
                 self.clf = deepcopy(clf) 
             else:
-                for i in range(X_u.shape[0]):
-                    if(y_u[i]>0):
-                        print(p_c_d[i][1]-p_c_d[i][0]) 
+                # for i in range(X_u.shape[0]):
+                #     if(y_u[i]>0):
+                #         print(p_c_d[i][1]-p_c_d[i][0]) 
                 break 
         
-        return self 
+        return self
+
+    def predict_probability(self, X):
+        return self.clf.predict_proba(X)
 
     def partial_fit(self, X_l, y_l, X_u): 
         pass 

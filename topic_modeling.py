@@ -20,12 +20,14 @@ def group_by_topic(X, mapping, reverse_mapping):
 
     return lat_dir_aloc.transform(X)
 
-def model_topics(training_data_list, training_data_info, training_data_noninfo, test_data):
+def model_topics(training_data_list, training_data_info, training_data_noninfo, test_data_info,test_data_noninfo,trainU_data):
 
     informative_reviews, mapping, reverse_mapping, pred_prob = filter.filter(training_data_list,
                                                                   training_data_info,
                                                                   training_data_noninfo,
-                                                                  test_data)
+                                                                  test_data_info,
+                                                                  test_data_noninfo,
+                                                                  trainU_data)
 
     useful_data = np.append(informative_reviews,
                             preprocess.get_data([training_data_info], mapping),
