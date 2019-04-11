@@ -39,5 +39,7 @@ def filter(training_data_list, training_data_info, training_data_noninfo, test_d
     # get_instance_words(reverse_mapping,testX[1])
 
     predictions = classify(naive_bayes.BernoulliNB(), "BernoulliNB", trainX, trainY, testX, testY)
+    print("\nInstances sent to filter: %d" % (testX.shape[0]))
     informative_reviews = testX[predictions]
+    print("Useful instances: %d\n" % (informative_reviews.shape[0]))
     return (informative_reviews, mapping, reverse_mapping)
