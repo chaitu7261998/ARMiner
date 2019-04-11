@@ -77,7 +77,7 @@ def instance_ranking(useful_data, review_group_matrix, group_number,rank_number,
     		if tmp[j]: attr_temp.append(j)
     	attr_list.append(attr_temp)
 
-    similarity_cutoff = 1
+    similarity_cutoff = 0.8
 
     attr_tuple = [tuple(x) for x in attr_list]
 
@@ -139,6 +139,22 @@ def instance_ranking(useful_data, review_group_matrix, group_number,rank_number,
 
     return (unique_useful_data, ranked_useful_data)
 
+def create_groups(useful_data, review_group_matrix):
+    num_of_groups = len(review_group_matrix[0])
+
+    groups = [[] for i in range(num_of_groups)]
+
+    group_cutoff = 0.01
+
+    for i in range(0,len(useful_data)):
+    	j = 0
+    	for j in range(0,num_of_groups):
+    		if review_group_matrix[i][j] >= group_cutoff:
+    			groups[j].append(useful_data[i])
+
+    return groups
+
+
 def main(app_name):
 
     print("Data set: %s\n" % (app_name))
@@ -160,17 +176,7 @@ def main(app_name):
     group_weights = get_group_weights(2)
     group_rankings, group_scores = get_group_rankings(review_group_matrix, ratings, group_weights)
 
-    num_of_groups = len(review_group_matrix[0])
-
-    groups = [[] for i in range(num_of_groups)]
-
-    group_cutoff = 0.01
-
-    for i in range(0,len(useful_data)):
-    	j = 0
-    	for j in range(0,num_of_groups):
-    		if review_group_matrix[i][j] >= group_cutoff:
-    			groups[j].append(useful_data[i])
+    groups = create_groups(useful_data, review_group_matrix)
 
     group_ranking_result = []
     instance_ranking_result = []
