@@ -2,6 +2,7 @@ from topic_modeling import model_topics
 from helper import *
 import numpy as np
 from preprocess import *
+import os.path
 
 def group_volume(review_group_matrix):
 	return (review_group_matrix.sum(axis=0))
@@ -39,8 +40,8 @@ def jaccard_sim(instance1, instance2):
 	count_intersect = 0
 	count_1 = len(instance1)
 	count_2 = len(instance2)
-	i = 0 
-	j = 0 
+	i = 0
+	j = 0
 	while(i<count_1 and j <count_2):
 		if instance1[i]==instance2[j]:
 			count_intersect = count_intersect+1
@@ -54,70 +55,79 @@ def jaccard_sim(instance1, instance2):
 
 def instance_ranking(useful_data, review_group_matrix, group_number,rank_number,reverse_mapping):
 
-	is_duplicate = [0 for i in range(len(useful_data))]
-	unique_useful_data = []
-	unique_data_count = []
-	unique_data_proportion = []
+    is_duplicate = [0 for i in range(len(useful_data))]
+    unique_useful_data = []
+    unique_data_count = []
+    unique_data_proportion = []
 
-	attr_list=[]
+    attr_list=[]
 
-	for i in range(len(useful_data)):
-		tmp = useful_data[i]
-		attr_temp=[]
-		for j in range(len(tmp)):
-			if tmp[j]: attr_temp.append(j)
-		attr_list.append(attr_temp)
+    for i in range(len(useful_data)):
+    	tmp = useful_data[i]
+    	attr_temp=[]
+    	for j in range(len(tmp)):
+    		if tmp[j]: attr_temp.append(j)
+    	attr_list.append(attr_temp)
 
-	similarity_cutoff = 1
+    similarity_cutoff = 1
 
-	attr_tuple = [tuple(x) for x in attr_list]
+    attr_tuple = [tuple(x) for x in attr_list]
 
-	for i in range(0,len(attr_list)):
+    for i in range(0,len(attr_list)):
 
-		if is_duplicate[i] != 0:
-			continue
-	
-		data_count = 1
-		tmp = useful_data[i]
+    	if is_duplicate[i] != 0:
+    		continue
 
-		rating = get_rating(tmp)
-		prop = review_group_matrix[i][group_number]
+    	data_count = 1
+    	tmp = useful_data[i]
 
-		for j in range(i,len(attr_list)):
-			if jaccard_sim(attr_list[i],attr_list[j]) >= similarity_cutoff:
-				is_duplicate[j] = 1
-				data_count += 1
-				prop = max(prop, review_group_matrix[j][group_number])
+    	rating = get_rating(tmp)
+    	prop = review_group_matrix[i][group_number]
 
-				if get_rating(useful_data[j]) < rating:
-					for r in range(6):
-						tmp[r] = 0
-					tmp[get_rating(useful_data[j])] = 1
+    	for j in range(i,len(attr_list)):
+    		if jaccard_sim(attr_list[i],attr_list[j]) >= similarity_cutoff:
+    			is_duplicate[j] = 1
+    			data_count += 1
+    			prop = max(prop, review_group_matrix[j][group_number])
 
-		unique_data_proportion.append(prop)
-		unique_useful_data.append(tmp)
-		unique_data_count.append(data_count)
+    			if get_rating(useful_data[j]) < rating:
+    				for r in range(6):
+    					tmp[r] = 0
+    				tmp[get_rating(useful_data[j])] = 1
 
-	proportion = []
-	duplicates = []
-	rating = []
+    	unique_data_proportion.append(prop)
+    	unique_useful_data.append(tmp)
+    	unique_data_count.append(data_count)
 
-	for i in range(len(unique_useful_data)):
-		proportion.append(unique_data_proportion[i])
-		duplicates.append(unique_data_count[i])
-		temp =0
-		for x in range(6):
-			if unique_useful_data[i][x]: temp=max(temp,x)
-		rating.append(float(1/temp))
+    proportion = []
+    duplicates = []
+    rating = []
 
-	max_duplicates = max(duplicates)
+    for i in range(len(unique_useful_data)):
+    	proportion.append(unique_data_proportion[i])
+    	duplicates.append(unique_data_count[i])
+    	temp =0
+    	for x in range(6):
+    		if unique_useful_data[i][x]: temp=max(temp,x)
+    	rating.append(float(1/temp))
 
-	instance_weights = [float(1/3), float(1/3), float(1/3)]
-	instance_scores =[(instance_weights[0]*proportion[i]+instance_weights[1]*float(duplicates[i]/max_duplicates)+instance_weights[2]*rating[i],i+1) for i in range(len(unique_useful_data))]
-	instance_scores.sort(reverse=True)
-	instance_rankings =[instance_scores[i][1] for i in range(len(instance_scores))]
-	ranked_useful_data = [useful_data[x-1] for x in instance_rankings]
-	get_all_instance_words(reverse_mapping,ranked_useful_data,"group_"+str(group_number)+"_rank_"+str(rank_number)+".txt")
+    max_duplicates = max(duplicates)
+
+    instance_weights = [float(1/3), float(1/3), float(1/3)]
+    instance_scores =[(instance_weights[0]*proportion[i]+instance_weights[1]*float(duplicates[i]/max_duplicates)+instance_weights[2]*rating[i],i+1) for i in range(len(unique_useful_data))]
+    instance_scores.sort(reverse=True)
+    instance_rankings =[instance_scores[i][1] for i in range(len(instance_scores))]
+    ranked_useful_data = [useful_data[x-1] for x in instance_rankings]
+
+    subdirectory = "groups"
+    try:
+        os.mkdir(subdirectory)
+    except FileExistsError:
+        pass
+
+    get_all_instance_words(reverse_mapping,
+                           ranked_useful_data,
+                           "groups/group_"+str(group_number)+"_rank_"+str(rank_number)+".txt")
 
 def main():
 
@@ -152,7 +162,7 @@ def main():
 				groups[j].append(useful_data[i])
 
 	group_ranking_result = []
-	rank =1 
+	rank =1
 	for idx in group_rankings:
 		group_ranking_result.append(instance_ranking(groups[idx-1], review_group_matrix, idx-1, rank,reverse_mapping))
 		rank =rank+1
