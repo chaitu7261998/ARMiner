@@ -27,15 +27,17 @@ def get_all_instance_words(reverse_mapping,data,file_name):
     word_list.close()
 
 # this function prints all the words corresponding to an instance
-def get_instance_words(reverse_mapping,data,file_name):
-	# word id starts from zero
-	rating_bits = 6
-	instance_count = 1
+def get_instance_words(reverse_mapping,data):
+    # word id starts from zero
+    rating_bits = 6
+    instance_count = 1
 
-	# get all the non-zero indices
-	indices = np.nonzero(data)[0][1:]
-	for index in indices:
-		print(reverse_mapping[index-rating_bits])
+    # get all the non-zero indices
+    indices = np.nonzero(data)[0][1:]
+    return_val = [reverse_mapping[index - rating_bits] for index in indices]
+    for word in return_val:
+    	print(word)
+    return return_val
 
 def get_rating(instance):
     for i in range(6):
