@@ -136,7 +136,7 @@ def instance_ranking(useful_data, review_group_matrix, group_number,rank_number,
                            ranked_useful_data,
                            "groups/group_"+str(group_number)+"_rank_"+str(rank_number)+".txt")
 
-    return unique_useful_data
+    return (unique_useful_data, ranked_useful_data)
 
 def main(app_name):
 
@@ -156,7 +156,7 @@ def main(app_name):
 
     instance_weights = get_instance_weights(review_group_matrix.shape[0])
     group_weights = get_group_weights(2)
-    group_rankings,group_scores = get_group_rankings(review_group_matrix, ratings, group_weights)
+    group_rankings, group_scores = get_group_rankings(review_group_matrix, ratings, group_weights)
 
     num_of_groups = len(review_group_matrix[0])
 
@@ -171,13 +171,15 @@ def main(app_name):
     			groups[j].append(useful_data[i])
 
     group_ranking_result = []
+    instance_ranking_result = []
     rank =1
     for idx in range(len(group_rankings)):
-    	group_ranking_result.append(instance_ranking(groups[idx-1], review_group_matrix, idx-1, rank,reverse_mapping))
-    	rank=rank+1
+        group_rank, instance_rank = instance_ranking(groups[idx-1], review_group_matrix, idx-1, rank,reverse_mapping)
+        group_ranking_result.append(group_rank)
+        instance_ranking_result.append(instance_rank)
+        rank = rank + 1
 
-    group_ranking_result = group_ranking_result
-    return (group_ranking_result, group_rankings, group_scores, mapping)
+    return (group_ranking_result, instance_ranking_result, group_rankings, group_scores, mapping)
 
 if __name__ == '__main__':
 	main("tapfish")
