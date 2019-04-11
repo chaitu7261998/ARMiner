@@ -27,7 +27,7 @@ def extract_words_and_add_to_dict(filenamelist):
     for filename in filenamelist:
 
         # Open file and read lines
-        with open(filename) as f:
+        with open(filename, encoding="ISO-8859-1") as f:
             lines = f.read().splitlines()
 
         # For all lines in this file
@@ -71,7 +71,7 @@ def get_data(filenamelist, word_id):
     # For all files in the given list of filenames
     for filename in filenamelist:
         # Open file and read lines
-        with open(filename) as f:
+        with open(filename, encoding="ISO-8859-1") as f:
             lines = f.read().splitlines()
 
         for line in lines:

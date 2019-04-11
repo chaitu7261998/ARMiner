@@ -146,7 +146,6 @@ def main(app_name):
     training_data_noninfo = "datasets/" + app_name + "/trainL/non-info.txt"
     test_data = "datasets/" + app_name + "/trainU/unlabeled.txt"
 
-    print(training_data_list)
     review_group_matrix, useful_data, mapping = model_topics(training_data_list,
     														 training_data_info,
     														 training_data_noninfo,
