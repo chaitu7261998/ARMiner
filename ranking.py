@@ -176,7 +176,7 @@ def main(app_name):
     instance_ranking_result = []
     rank =1
     for idx in range(len(group_rankings)):
-        group_rank, instance_rank = instance_ranking(groups[idx-1], review_group_matrix, idx-1, rank,reverse_mapping)
+        group_rank, instance_rank = instance_ranking(groups[idx], review_group_matrix, idx, rank,reverse_mapping)
         group_ranking_result.append(group_rank)
         instance_ranking_result.append(instance_rank)
         rank = rank + 1
