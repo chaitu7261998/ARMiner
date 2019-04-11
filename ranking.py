@@ -121,7 +121,7 @@ def instance_ranking(useful_data, review_group_matrix, group_number,rank_number,
 
     max_duplicates = max(duplicates)
 
-    instance_weights = [float(1/3), float(1/3), float(1/3)]
+    instance_weights = [float(5/6), float(1/12), float(1/12)]
     instance_scores =[(instance_weights[0]*proportion[i]+instance_weights[1]*float(duplicates[i]/max_duplicates)+instance_weights[2]*rating[i],i+1) for i in range(len(unique_useful_data))]
     instance_scores.sort(reverse=True)
     instance_rankings =[instance_scores[i][1] for i in range(len(instance_scores))]
@@ -145,7 +145,7 @@ def create_groups(useful_data, review_group_matrix, pred_prob):
     groups = [[] for i in range(num_of_groups)]
     review_group_matrix_groups = [[] for i in range(num_of_groups)]
 
-    group_cutoff = 0.01
+    group_cutoff = 0.3
 
     for i in range(0,len(useful_data)):
         j = 0
@@ -156,7 +156,6 @@ def create_groups(useful_data, review_group_matrix, pred_prob):
 
 
     return groups, review_group_matrix_groups
-
 
 def main(app_name):
 
