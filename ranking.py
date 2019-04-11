@@ -4,6 +4,7 @@ import numpy as np
 from preprocess import *
 import os.path
 import sys
+import shutil
 
 def group_volume(review_group_matrix):
 	return (review_group_matrix.sum(axis=0))
@@ -168,22 +169,23 @@ def create_groups(useful_data, review_group_matrix, pred_prob):
 
 def main(app_name):
 
+    # Remove groups subfolder
+    try:
+        shutil.rmtree("groups")
+    except FileNotFoundError:
+        pass
+
     print("Data set: %s\n" % (app_name))
     training_data_list = ["datasets/" + app_name + "/trainL/info.txt",
                             "datasets/" + app_name + "/trainL/non-info.txt"]
     training_data_info = "datasets/" + app_name + "/trainL/info.txt"
     training_data_noninfo = "datasets/" + app_name + "/trainL/non-info.txt"
-    trainU_data = "datasets/" + app_name + "/trainU/unlabeled.txt"
-    test_data_info = "datasets/" + app_name + "/test/info.txt"
-    test_data_noninfo = "datasets/" + app_name + "/test/info.txt"
-
+    test_data = "datasets/" + app_name + "/trainU/unlabeled.txt"
 
     review_group_matrix, useful_data, mapping, pred_prob = model_topics(training_data_list,
     														 training_data_info,
     														 training_data_noninfo,
-    														 test_data_info,
-    														 test_data_noninfo,
-    														 trainU_data)
+    														 test_data)
 
     ratings = review_ratings (useful_data)
     reverse_mapping = get_reverse_mapping(mapping)
@@ -196,13 +198,13 @@ def main(app_name):
 
     group_ranking_result = []
     instance_ranking_result = []
-    rank =1
+    rank = 1
     for idx in range(len(group_rankings)):
         group_rank, instance_rank = instance_ranking(groups[idx], review_group_matrix_groups[idx], pred_prob_groups[idx], idx, rank,reverse_mapping)
         group_ranking_result.append(group_rank)
         instance_ranking_result.append(instance_rank)
         rank = rank + 1
-        print("Finised ranking a group")
+        print("Finished ranking group #%d" % (idx + 1))
 
     return (group_ranking_result, instance_ranking_result, group_rankings, group_scores, mapping)
 
