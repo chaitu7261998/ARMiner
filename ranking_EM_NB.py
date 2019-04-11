@@ -41,13 +41,15 @@ def main():
 	training_data_list = ["datasets/swiftkey/trainL/info.txt","datasets/swiftkey/trainL/non-info.txt"]
 	training_data_info = "datasets/swiftkey/trainL/info.txt"
 	training_data_noninfo = "datasets/swiftkey/trainL/non-info.txt"
-	test_data = "datasets/swiftkey/trainL/non-info.txt"
+	test_data_info = "datasets/swiftkey/test/info.txt"
+	test_data_noninfo = "datasets/swiftkey/test/non-info.txt"
 	trainU_data = "datasets/swiftkey/trainU/unlabeled.txt"
 
 	review_group_matrix, useful_data, mapping = model_topics(training_data_list, 
 															 training_data_info, 
 															 training_data_noninfo, 
-															 test_data,
+															 test_data_info,
+															 test_data_noninfo,
 															 trainU_data)
 
 	ratings = review_ratings (useful_data)

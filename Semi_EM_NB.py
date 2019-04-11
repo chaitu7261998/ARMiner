@@ -11,7 +11,7 @@ from scipy.linalg import get_blas_funcs
 
 class Semi_EM_MultinomialNB(): 
   
-    def __init__(self, alpha=1.0, fit_prior=True, class_prior=None, max_iter=5, tol=0.0000001): 
+    def __init__(self, alpha=1.0, fit_prior=True, class_prior=None, max_iter=20, tol=0.0000001): 
         self.alpha = alpha 
         self.fit_prior = fit_prior 
         self.class_prior = class_prior 
@@ -54,6 +54,8 @@ class Semi_EM_MultinomialNB():
             y = np.concatenate((y_l, y_u), axis=0) 
             clf.fit(X, y) # check convergence: update log likelihood 
             p_c_d = clf.predict_proba(X_u) 
+            
+
             lp_w_c = clf.feature_log_prob_ # log CP of word given class [n_classes, n_words] 
             b_w_d = (X_u > 0) # words in each document 
             lp_d_c = get_blas_funcs("gemm", [lp_w_c, b_w_d.transpose()]) # log CP of doc given class [n_classes, n_docs] 
@@ -68,7 +70,10 @@ class Semi_EM_MultinomialNB():
                 prev_log_lkh = self.log_lkh 
                 self.log_lkh = expectation 
                 self.clf = deepcopy(clf) 
-            else: 
+            else:
+                for i in range(X_u.shape[0]):
+                    if(y_u[i]>0):
+                        print(p_c_d[i][1]-p_c_d[i][0]) 
                 break 
         
         return self 
