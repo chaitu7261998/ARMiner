@@ -22,7 +22,7 @@ def group_by_topic(X, mapping, reverse_mapping):
 
 def model_topics(training_data_list, training_data_info, training_data_noninfo, test_data):
 
-    informative_reviews, mapping, reverse_mapping = filter.filter(training_data_list,
+    informative_reviews, mapping, reverse_mapping, pred_prob = filter.filter(training_data_list,
                                                                   training_data_info,
                                                                   training_data_noninfo,
                                                                   test_data)
@@ -31,5 +31,9 @@ def model_topics(training_data_list, training_data_info, training_data_noninfo, 
                             preprocess.get_data([training_data_info], mapping),
                             axis=0)
 
+    ones_size = useful_data.shape[0] - informative_reviews.shape[0]
+
+    pred_prob = np.append(pred_prob, np.ones(ones_size))
+
     group_matrix = group_by_topic(useful_data, mapping, reverse_mapping)
-    return (group_matrix, useful_data, mapping)
+    return (group_matrix, useful_data, mapping, pred_prob)

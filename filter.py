@@ -9,13 +9,17 @@ def classify(clf, clf_name, trainX, trainY, testX, testY):
     print("Done Fitting.....")
 
     result = clf.predict(testX)
+    pred_prob = clf.predict_proba(testX)
+
+    pred_prob = pred_prob[:,1]
+
     result = np.array(result, dtype=bool)
     # Calculate accuracy only when test results are provided
     if result.shape == testY.shape:
         correct_predictions = np.count_nonzero(result == testY)
         print("Accuracy: %.6f\n" % (correct_predictions/result.shape[0]))
 
-    return result
+    return result, pred_prob
 
 # Args: [], "", ""
 def filter(training_data_list, training_data_info, training_data_noninfo, test_data):
@@ -38,8 +42,9 @@ def filter(training_data_list, training_data_info, training_data_noninfo, test_d
     # get_all_instance_words(reverse_mapping,testX,"helper.txt")
     # get_instance_words(reverse_mapping,testX[1])
 
-    predictions = classify(naive_bayes.BernoulliNB(), "BernoulliNB", trainX, trainY, testX, testY)
+    predictions, pred_prob = classify(naive_bayes.BernoulliNB(), "BernoulliNB", trainX, trainY, testX, testY)
     print("\nInstances sent to filter: %d" % (testX.shape[0]))
     informative_reviews = testX[predictions]
+    pred_prob_array = pred_prob[predictions]
     print("Useful instances: %d\n" % (informative_reviews.shape[0]))
-    return (informative_reviews, mapping, reverse_mapping)
+    return (informative_reviews, mapping, reverse_mapping, pred_prob_array)
