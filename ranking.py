@@ -3,6 +3,7 @@ from helper import *
 import numpy as np
 from preprocess import *
 import os.path
+import sys
 
 def group_volume(review_group_matrix):
 	return (review_group_matrix.sum(axis=0))
@@ -140,6 +141,7 @@ def instance_ranking(useful_data, review_group_matrix, group_number,rank_number,
 
 def main(app_name):
 
+    print("Data set: %s\n" % (app_name))
     training_data_list = ["datasets/" + app_name + "/trainL/info.txt",
                             "datasets/" + app_name + "/trainL/non-info.txt"]
     training_data_info = "datasets/" + app_name + "/trainL/info.txt"
@@ -182,4 +184,7 @@ def main(app_name):
     return (group_ranking_result, instance_ranking_result, group_rankings, group_scores, mapping)
 
 if __name__ == '__main__':
-	main("tapfish")
+    if len(sys.argv) < 2 or sys.argv[1] not in ["facebook", "swiftkey", "tapfish", "templerun2"]:
+        main("tapfish")
+    else:
+        main(sys.argv[1])
