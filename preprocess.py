@@ -79,7 +79,11 @@ def get_data(filenamelist, word_id):
 
             # Get rating
             rating = 0
-            rating_str = line.split(" ", 2)[1]
+            try:
+                rating_str = line.split(" ", 2)[1]
+            except IndexError:
+                continue
+
             if rating_str.endswith("one"):
                 rating = 1
             elif rating_str.endswith("two"):
